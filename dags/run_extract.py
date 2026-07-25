@@ -23,7 +23,7 @@ def main():
     label = now.strftime("%Hh")
 
     for city, (lat, lon) in cities_coordinates.items():
-        if Path("raw") / run_date / f"aqi_{city.lower()}_{label}.csv".exists():
+        if Path(f"raw/{run_date}/aqi_{city.lower()}_{label}.csv").exists():
             print(f"[SKIP] {city} {label} (déjà présent)")
             continue
         try:
