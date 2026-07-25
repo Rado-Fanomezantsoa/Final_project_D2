@@ -1,0 +1,39 @@
+name: Run Backfill
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: backfill run
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code du repo.
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install -r config/requirements.txt
+
+      - name: Récupérer les données en backfill
+        run: python -m backfill.run_backfill
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
+      - name: Committer les nouveaux fichiers
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add raw/
+          git diff --staged --quiet || git commit -m "Run Backfill"
+          git push

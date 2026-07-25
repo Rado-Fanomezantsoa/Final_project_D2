@@ -1,0 +1,41 @@
+name: Pipeline AQI horaire
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: Pipeline AQI
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code du repo.
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install -r config/requirements.txt
+
+      - name: Extraire les données AQI
+        run: python -m dags.run_extract
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
+      - name: Committer les nouveaux fichiers
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add raw/
+          git diff --staged --quiet || git commit -m "Data AQI $(date -u +'%Y-%m-%dT%H:%M')"
+          git push
