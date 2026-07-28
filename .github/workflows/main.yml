@@ -14,9 +14,11 @@ permissions:
 
 jobs:
   pipeline:
+    name: Pipeline AQI horaire
     runs-on: ubuntu-latest
+
     steps:
-      - name: Récupérer le code du repo.
+      - name: Récupérer le code du repo
         uses: actions/checkout@v4
 
       - name: Installer Python
@@ -25,7 +27,9 @@ jobs:
           python-version: "3.11"
 
       - name: Installer les dépendances
-        run: pip install -r config/requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r config/requirements.txt
 
       - name: Extraire les données AQI
         run: python -m dags.run_extract
@@ -39,7 +43,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add raw/
-          git add clean/
+          git add raw/ clean/
           git diff --staged --quiet || git commit -m "Data AQI brute & clean $(date -u +'%Y-%m-%dT%H:%M')"
           git push
