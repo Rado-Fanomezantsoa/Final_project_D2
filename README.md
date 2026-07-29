@@ -2,7 +2,7 @@
 
 ## Description
 
-An automated ETL pipeline that collects hourly air quality data from public APIs, transforms it into a clean and standardized dataset, stores it in a dimensional data warehouse, and provides dashboards for air quality analysis.
+An automated ETL pipeline that collects air quality data every 15 minutes from public APIs, transforms it into a clean and standardized dataset, stores it in a dimensional data warehouse, and provides dashboards for air quality analysis.
 
 ---
 
@@ -12,7 +12,7 @@ An automated ETL pipeline that collects hourly air quality data from public APIs
 |-------------|------|------------------|
 | Tokiniaina | Data Engineer – Collection | Collect AQI data, manage API, implement backfill |
 | Eric | Data Engineer – Orchestration | Automate ETL, schedule jobs, deploy pipeline |
-| Nomena | Data Engineer – Transformation | Clean, validate, and transform data |
+| Rado | Data Engineer – Transformation | Clean, validate, and transform data |
 | Toavina | Data Modeler | Design warehouse schema and load data |
 | Sitraka | Lead Documentation & QA | Documentation, project coordination, quality assurance |
 
@@ -30,7 +30,7 @@ An automated ETL pipeline that collects hourly air quality data from public APIs
 
 ---
 
-## Data Contract (`clean.csv`)
+## Data Contract (`clean/final.csv`)
 
 | Column | Type | Unit | Description |
 |---------|------|------|-------------|
@@ -51,8 +51,8 @@ An automated ETL pipeline that collects hourly air quality data from public APIs
 ## Data Coverage
 
 - **Cities:** 5
-- **Collection frequency:** Every 3  Hours
-- **Backfill period:** TODO (3 or 12 months)
+- **Collection frequency:** Every 15 minutes
+- **Backfill period:** 4 months of historical data
 - **Timezone:** UTC
 
 ---
