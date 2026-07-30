@@ -90,6 +90,30 @@ An automated ETL pipeline that collects air quality data every 15 minutes from p
 
 ---
 
+## Orchestration & Automation
+
+Two separate GitHub Actions workflows handle the pipeline's execution:
+
+### 1. Hourly AQI Pipeline (`main.yml`)
+- **Trigger**: GitHub-native `schedule` (`*/15 * * * *`) + `workflow_dispatch`
+- **Role**: extracts, cleans, and loads AQI data continuously on `main`
+- **Known limitation**: GitHub Actions scheduled triggers only run on the repository's default branch (`main`). This occasionally causes merge conflicts on auto-generated files (`raw/`, `clean/final.csv`) when syncing feature branches with `main`.
+
+### 2. Hourly Backfill (`backfill.yml`)
+- **Trigger**: `workflow_dispatch` only (no native schedule)
+- **Role**: retrieves historical AQI data on a dedicated `backfill-hourly` branch
+- **Automation**: since GitHub Actions cannot natively schedule a workflow on a non-default branch, hourly execution is triggered by an **external cron service** ([cron-job.org](https://cron-job.org)) calling the GitHub API:
+  ```
+  POST https://api.github.com/repos/Rado-Fanomezantsoa/Final_project_D2/actions/workflows/backfill.yml/dispatches
+  Body: {"ref": "backfill-hourly"}
+  ```
+  Frequency: every hour (`0 * * * *`)
+
+### Acknowledgments
+The external cron trigger setup for `backfill.yml` (API endpoint configuration, authentication headers, and troubleshooting branch-related deployment errors) was set up with assistance from Claude (Anthropic), as part of Eric's orchestration and automation work.
+
+---
+
 ## Repository Structure
 
 ```text
@@ -101,5 +125,3 @@ ARCHITECTURE.md
 README.md
 requirements.txt
 ```
-
-
