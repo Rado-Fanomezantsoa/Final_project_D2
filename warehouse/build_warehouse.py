@@ -140,4 +140,3 @@ if __name__ == "__main__":
     parser.add_argument("--no-load", action="store_true", help="Ne pas charger dans PostgreSQL")
     args = parser.parse_args()
     build_warehouse(load_db=not args.no_load)
-

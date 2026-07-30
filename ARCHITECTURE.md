@@ -1,8 +1,6 @@
-# System Architecture
-
 ## Project Overview
 
-The DataPulse pipeline automatically collects hourly Air Quality Index (AQI) data for five cities, processes the collected data through an ETL workflow, stores it in a PostgreSQL data warehouse, and makes it available for visualization.
+The pipeline automatically collects Air Quality Index (AQI) data every 15 minutes for five cities, processes the collected data through an ETL workflow, stores it in a PostgreSQL data warehouse, and makes it available for visualization.
 
 ---
 
@@ -12,7 +10,7 @@ The DataPulse pipeline automatically collects hourly Air Quality Index (AQI) dat
               Air Quality API
                      │
                      ▼
-          GitHub Actions (Hourly)
+          GitHub Actions (every 15 minutes)
                      │
                      ▼
                  Data Collection
@@ -24,7 +22,7 @@ The DataPulse pipeline automatically collects hourly Air Quality Index (AQI) dat
               Data Transformation
                      │
                      ▼
-              clean/air_quality.csv
+              clean/final.csv
                      │
                      ▼
              load_warehouse.py
@@ -68,11 +66,11 @@ The DataPulse pipeline automatically collects hourly Air Quality Index (AQI) dat
 - Remove duplicates.
 - Standardize data types and units.
 - Sort observations chronologically.
-- Generate a single `clean.csv`.
+- Generate a single `clean/final.csv`.
 
 ### 3. Load
 
-- Read `clean.csv`.
+- Read `clean/final.csv`.
 - Populate the PostgreSQL warehouse.
 - Update fact and dimension tables.
 
@@ -89,7 +87,7 @@ The DataPulse pipeline automatically collects hourly Air Quality Index (AQI) dat
 ### clean/
 
 - Rebuilt at every execution.
-- Contains one consolidated CSV.
+- Contains the consolidated dataset (`clean/final.csv`), rebuilt at every execution.
 - Used as the source for warehouse loading.
 
 ---
@@ -98,7 +96,9 @@ The DataPulse pipeline automatically collects hourly Air Quality Index (AQI) dat
 
 ### Schema
 
-**Star Schema**
+| Choice | Reason |
+|--------|--------|
+| **Star Schema** | Chosen for its simplicity, efficient querying, and suitability for data analysis. |
 
 ### Fact Table
 
@@ -130,7 +130,7 @@ Measures include:
 
 ## Automation
 
-The pipeline is scheduled to run automatically every hour using GitHub Actions. Each execution performs the complete ETL process, ensuring that both the clean dataset and the data warehouse remain up to date.
+The pipeline is scheduled to run automatically every 15 minutes using GitHub Actions. Each execution performs the complete ETL process, ensuring that both the clean dataset and the data warehouse remain up to date.
 
 ---
 
