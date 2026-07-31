@@ -105,16 +105,6 @@ Two separate GitHub Actions workflows handle the pipeline's execution:
   ```
   Frequency: every hour (`0 * * * *`)
 
-### 2. Hourly Backfill (`backfill.yml`)
-- **Trigger**: `workflow_dispatch` only (no native schedule)
-- **Role**: retrieves historical AQI data on a dedicated `backfill-hourly` branch
-- **Automation**: since GitHub Actions cannot natively schedule a workflow on a non-default branch, hourly execution is triggered by an **external cron service** ([cron-job.org](https://cron-job.org)) calling the GitHub API:
-  ```
-  POST https://api.github.com/repos/Rado-Fanomezantsoa/Final_project_D2/actions/workflows/backfill.yml/dispatches
-  Body: {"ref": "backfill-hourly"}
-  ```
-  Frequency: every hour (`0 * * * *`)
-
 ### Acknowledgments
 The external cron trigger setup for `main.yml` and `backfill.yml` (API endpoint configuration, authentication headers, and troubleshooting branch-related deployment errors) was set up with assistance from Claude (Anthropic), as part of Eric's orchestration and automation work.
 
