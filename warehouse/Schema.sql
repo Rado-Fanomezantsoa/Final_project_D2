@@ -1,12 +1,7 @@
 -- -----------------------------------------------------------------------------
--- CREATION de la Base de Donnee(DB)
--- -----------------------------------------------------------------------------
-CREATE DATABASE donnee_DB;
-
--- -----------------------------------------------------------------------------
 -- DIM_CITY : une ligne par ville suivie (référentiel statique, 5 lignes)
 -- -----------------------------------------------------------------------------
-CREATE TABLE dim_city (
+CREATE TABLE IF NOT EXISTS dim_city (
     city_id     SERIAL PRIMARY KEY,
     city        VARCHAR(100) NOT NULL,
     country     VARCHAR(100) NOT NULL,
@@ -18,7 +13,7 @@ CREATE TABLE dim_city (
 -- -----------------------------------------------------------------------------
 -- DIM_TIME : une ligne par heure distincte observée (arrondie à l'heure pleine)
 -- -----------------------------------------------------------------------------
-CREATE TABLE dim_time (
+CREATE TABLE IF NOT EXISTS dim_time (
     time_id       SERIAL PRIMARY KEY,
     full_datetime TIMESTAMPTZ NOT NULL,
     date          DATE NOT NULL,
@@ -35,7 +30,7 @@ CREATE TABLE dim_time (
 -- -----------------------------------------------------------------------------
 -- FACT_AIR_QUALITY : une ligne par observation (ville x heure)
 -- -----------------------------------------------------------------------------
-CREATE TABLE fact_air_quality (
+CREATE TABLE IF NOT EXISTS fact_air_quality (
     fact_id       BIGSERIAL PRIMARY KEY,
     city_id       INTEGER NOT NULL REFERENCES dim_city(city_id),
     time_id       INTEGER NOT NULL REFERENCES dim_time(time_id),
@@ -52,6 +47,10 @@ CREATE TABLE fact_air_quality (
     UNIQUE (city_id, time_id)
 );
 
-CREATE INDEX idx_fact_city ON fact_air_quality(city_id);
-CREATE INDEX idx_fact_time ON fact_air_quality(time_id);
-CREATE INDEX idx_dim_time_date ON dim_time(date);
+-- Ré-exécution idempotente : on repart d'une base vide à chaque run
+-- (RESTART IDENTITY réinitialise aussi les compteurs SERIAL/BIGSERIAL)
+TRUNCATE TABLE fact_air_quality, dim_time, dim_city RESTART IDENTITY CASCADE;
+
+CREATE INDEX IF NOT EXISTS idx_fact_city ON fact_air_quality(city_id);
+CREATE INDEX IF NOT EXISTS idx_fact_time ON fact_air_quality(time_id);
+CREATE INDEX IF NOT EXISTS idx_dim_time_date ON dim_time(date);
