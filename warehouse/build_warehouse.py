@@ -98,7 +98,7 @@ def load_to_postgres(dim_city: pd.DataFrame, dim_time: pd.DataFrame, fact: pd.Da
 
     try:
         with engine.begin() as conn:
-            schema_sql = (WAREHOUSE_DIR / "schema.sql").read_text(encoding="utf-8")
+            schema_sql = (WAREHOUSE_DIR / "Schema.sql").read_text(encoding="utf-8")
             conn.execute(text(schema_sql))
 
         dim_city.to_sql("dim_city", engine, if_exists="append", index=False)

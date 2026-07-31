@@ -46,7 +46,12 @@ def build_clean():
     if len(missing) > 0:
         print(f" Villes sans correspondance : {missing}")
 
-    df = df.drop_duplicates(subset=["city", "datetime"], keep="last")
+    df["hour_bucket"] = df["datetime"].dt.floor("h")
+    df = df.sort_values(["datetime"]).drop_duplicates(
+        subset=["city", "hour_bucket"], keep="last"
+    )
+
+    df = df.drop(columns=["hour_bucket"])
     df = df.sort_values(["datetime", "city"]).reset_index(drop=True)
     df = df[COLUMNS_ORDER]
 
