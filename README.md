@@ -81,10 +81,10 @@ An automated ETL pipeline that collects air quality data every 15 minutes from p
 
 | Item | Value |
 |------|-------|
-| Database | PostgreSQL |
-| Host | TODO |
-| Port | TODO |
-| Database Name | TODO |
+| Database | PostgreSQL (Neon) |
+| Host | ep-red-brook-axxipcj4-pooler.c-4.us-east-2.aws.neon.tech |
+| Port | 5432 |
+| Database Name | neondb |
 
 > Authentication credentials are not included in this repository.
 

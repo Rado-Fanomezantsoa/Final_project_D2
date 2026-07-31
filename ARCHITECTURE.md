@@ -28,7 +28,7 @@ The pipeline automatically collects Air Quality Index (AQI) data every 15 minute
              load_warehouse.py
                      │
                      ▼
-         PostgreSQL Data Warehouse
+         PostgreSQL Data Warehouse (Neon)
                      │
                      ▼
               Power BI Dashboard
