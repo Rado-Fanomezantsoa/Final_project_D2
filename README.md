@@ -98,6 +98,12 @@ Two separate GitHub Actions workflows handle the pipeline's execution:
 - **Trigger**: GitHub-native `schedule` (`*/15 * * * *`) + `workflow_dispatch`
 - **Role**: extracts, cleans, and loads AQI data continuously on `main`
 - **Known limitation**: GitHub Actions scheduled triggers only run on the repository's default branch (`main`). This occasionally causes merge conflicts on auto-generated files (`raw/`, `clean/final.csv`) when syncing feature branches with `main`.
+- **Dedicated branch run**: to also run this pipeline hourly on a separate, isolated branch (`pipeline-hourly`) without waiting for a merge to `main`, execution is additionally triggered by an **external cron service** ([cron-job.org](https://cron-job.org)) calling the GitHub API:
+  ```
+  POST https://api.github.com/repos/Rado-Fanomezantsoa/Final_project_D2/actions/workflows/main.yml/dispatches
+  Body: {"ref": "pipeline-hourly"}
+  ```
+  Frequency: every hour (`0 * * * *`)
 
 ### 2. Hourly Backfill (`backfill.yml`)
 - **Trigger**: `workflow_dispatch` only (no native schedule)
@@ -110,7 +116,7 @@ Two separate GitHub Actions workflows handle the pipeline's execution:
   Frequency: every hour (`0 * * * *`)
 
 ### Acknowledgments
-The external cron trigger setup for `backfill.yml` (API endpoint configuration, authentication headers, and troubleshooting branch-related deployment errors) was set up with assistance from Claude (Anthropic), as part of Eric's orchestration and automation work.
+The external cron trigger setup for `main.yml` and `backfill.yml` (API endpoint configuration, authentication headers, and troubleshooting branch-related deployment errors) was set up with assistance from Claude (Anthropic), as part of Eric's orchestration and automation work.
 
 ---
 
