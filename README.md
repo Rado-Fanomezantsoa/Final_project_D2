@@ -99,10 +99,10 @@ Two separate GitHub Actions workflows handle the pipeline's execution:
 - **Role**: extracts, cleans, and loads AQI data continuously on `main`
 - **Known limitation**: GitHub Actions scheduled triggers only run on the repository's default branch (`main`). This occasionally causes merge conflicts on auto-generated files (`raw/`, `clean/final.csv`) when syncing feature branches with `main`.
 - **Dedicated branch run**: to also run this pipeline hourly on a separate, isolated branch (`pipeline-hourly`) without waiting for a merge to `main`, execution is additionally triggered by an **external cron service** ([cron-job.org](https://cron-job.org)) calling the GitHub API:
-  ```
+  
   POST https://api.github.com/repos/Rado-Fanomezantsoa/Final_project_D2/actions/workflows/main.yml/dispatches
-  Body: {"ref": "pipeline-hourly"}
-  ```
+  Body: {"ref": "main"}
+ 
   Frequency: every hour (`0 * * * *`)
 
 ### Acknowledgments
